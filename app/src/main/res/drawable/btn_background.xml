@@ -1,0 +1,10 @@
+<!-- res/drawable/btn_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FF6F61"/> <!-- Màu nền (bạn có thể thay đổi) -->
+    <corners android:radius="8dp"/> <!-- Bo góc -->
+    <padding
+        android:left="16dp"
+        android:right="16dp"
+        android:top="8dp"
+        android:bottom="8dp" /> <!-- Khoảng cách giữa viền và nội dung -->
+</shape>

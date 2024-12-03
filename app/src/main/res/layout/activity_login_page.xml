@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="32dp"
+    android:gravity="center"
+    android:background="@drawable/img_background">
+
+    <!-- Logo -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:src="@drawable/img_logoapp"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Title Text -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Campus Expense Manager"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginBottom="40dp" />
+
+    <!-- Input Fields -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="30dp">
+
+        <EditText
+            android:id="@+id/edtUsername"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Username"
+            android:textColorHint="#B0B0B0"
+            android:paddingStart="16dp"
+            android:backgroundTint="#333333"
+            android:textColor="#FFFFFF"
+            android:inputType="textEmailAddress"
+            android:drawablePadding="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_background"/>
+
+        <EditText
+            android:id="@+id/edtPassword"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Password"
+            android:textColorHint="#B0B0B0"
+            android:paddingStart="16dp"
+            android:backgroundTint="#333333"
+            android:textColor="#FFFFFF"
+            android:inputType="textPassword"
+            android:drawablePadding="8dp"
+            android:background="@drawable/edittext_background"/>
+    </LinearLayout>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:gravity="center"
+        android:layout_marginBottom="20dp">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Login"
+            android:fontFamily="serif"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#0DA611"
+            android:id="@+id/btnLogin"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:fontFamily="serif"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF4040"
+            android:id="@+id/btnCancel"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+    <!-- Sign Up Link -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Do you have an account?"
+        android:textColor="@color/white"
+        android:fontFamily="serif"
+        android:textSize="16sp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign up"
+        android:textSize="18sp"
+        android:textStyle="bold|italic"
+        android:fontFamily="serif"
+        android:textColor="#10D1E9"
+        android:id="@+id/tvSignup" />
+
+</LinearLayout>

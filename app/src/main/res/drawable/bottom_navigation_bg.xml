@@ -1,0 +1,5 @@
+<!-- bottom_navigation_bg.xml -->
+<gradient xmlns:android="http://schemas.android.com/apk/res/android"
+    android:startColor="#6200EE"
+    android:endColor="#3700B3"
+    android:angle="45" />

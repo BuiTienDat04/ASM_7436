@@ -1,0 +1,5 @@
+<!-- res/drawable/btn_back_normal.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#1F1F1F"/> <!-- Màu nền tối khi không nhấn -->
+    <corners android:radius="8dp"/> <!-- Bo góc -->
+</shape>

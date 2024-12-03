@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Màu nền của TextView -->
+    <solid android:color="#303030" /> <!-- Màu nền tối -->
+
+    <!-- Khung viền -->
+    <stroke
+        android:width="2dp"
+    android:color="#FFFFFF" />
+
+    <!-- Bo góc viền -->
+    <corners android:radius="8dp" />
+
+    <!-- Padding bên trong khung -->
+    <padding
+        android:left="8dp"
+        android:top="4dp"
+        android:right="8dp"
+        android:bottom="4dp" />
+</shape>

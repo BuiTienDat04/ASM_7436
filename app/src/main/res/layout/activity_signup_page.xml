@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="@drawable/img_background">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="217dp"
+        android:src="@drawable/img_logoapp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Campus Expense Manager"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:fontFamily="serif"
+        android:textColor="@color/white"
+        android:layout_margin="20dp"/>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edtUsername"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Username"
+            android:textColorHint="#8E8E8E"
+            android:paddingStart="16dp"
+            android:backgroundTint="#333333"
+            android:textColor="#FFFFFF"
+            android:inputType="textEmailAddress"
+            android:drawablePadding="8dp"
+            android:background="@drawable/edittext_background"/>
+
+        <EditText
+            android:id="@+id/edtPassword"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Password"
+            android:textColorHint="#8E8E8E"
+            android:paddingStart="16dp"
+            android:backgroundTint="#333333"
+            android:textColor="#FFFFFF"
+            android:inputType="textPassword"
+            android:drawablePadding="8dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/edittext_background" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="10dp"
+        android:gravity="center">
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sign Up"
+            android:fontFamily="serif"
+            android:backgroundTint="#0DA611"
+            android:id="@+id/btnSignup"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="serif"
+            android:backgroundTint="#0DA611"
+            android:text="Cancel"
+            android:id="@+id/btnCancel"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Do you have a account?"
+        android:textColor="@color/white"
+        android:fontFamily="serif"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textSize="18sp"
+        android:textStyle="bold|italic"
+        android:fontFamily="serif"
+        android:textColor="#10D1E9"
+        android:id="@+id/tvLogin"/>
+</LinearLayout>

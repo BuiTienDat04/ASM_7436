@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ASM"
+        tools:targetApi="31">
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".SignupActivity"/>
+        <activity android:name=".budget.BudgetListActivity"/>
+        <activity android:name=".BudgetFragment"/>
+        <activity android:name=".WalletFragment"/>
+        <activity android:name=".AccountFragment"/>
+        <activity android:name=".HomeFragment"/>
+        <activity android:name=".MenuMainActivity"/>
+        <activity android:name=".budget.AddBudgetActivity"/>
+        <activity android:name=".budget.Group"/>
+        <activity android:name=".expenses.AddExpenseActivity"/>
+        <activity android:name=".expenses.TransactionListActivity"/>
+        <activity android:name=".budget.ItemDetailActivity"/>
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ASM">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
