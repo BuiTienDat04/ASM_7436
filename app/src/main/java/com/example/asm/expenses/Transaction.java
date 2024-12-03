@@ -1,5 +1,8 @@
 package com.example.asm.expenses;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class Transaction {
     private int id;
     private String description;
@@ -34,5 +37,11 @@ public class Transaction {
 
     public String getBudgetName() {
         return budgetName;
+    }
+
+    // Getter cho số tiền định dạng với dấu phẩy và VND
+    public String getFormattedAmount() {
+        NumberFormat formatter = NumberFormat.getNumberInstance(Locale.US);
+        return formatter.format(amount) + " VND";
     }
 }

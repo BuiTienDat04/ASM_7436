@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,7 +17,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.asm.MenuMainActivity;
 import com.example.asm.R;
+import com.example.asm.WalletFragment;
 import com.example.asm.budget.BudgetDatabaseHelper;
 
 import java.util.ArrayList;
@@ -49,6 +53,37 @@ public class AddExpenseActivity extends AppCompatActivity {
         populateBudgetSpinner();
         tvDate.setOnClickListener(this::onSelectDate);
         btnSave.setOnClickListener(this::onSaveExpense);
+        edtAmount.addTextChangedListener(new TextWatcher() {
+            private String currentText = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().equals(currentText)) {
+                    edtAmount.removeTextChangedListener(this);
+
+                    // Xóa ký tự không cần thiết
+                    String cleanString = s.toString().replaceAll("[^\\d]", ""); // Chỉ giữ lại số
+                    if (!cleanString.isEmpty()) {
+                        // Chuyển sang dạng có dấu phẩy và thêm " VND"
+                        long parsed = Long.parseLong(cleanString);
+                        String formatted = String.format("%,d VND", parsed);
+                        currentText = formatted;
+                        edtAmount.setText(formatted);
+                        edtAmount.setSelection(formatted.length() - 4); // Đặt con trỏ trước "VND"
+                    }
+
+                    edtAmount.addTextChangedListener(this);
+                }
+            }
+        });
 
         // Kiểm tra nếu đang chỉnh sửa giao dịch
         Intent intent = getIntent();
@@ -56,6 +91,9 @@ public class AddExpenseActivity extends AppCompatActivity {
         if (transactionId != -1) {
             loadTransactionData(intent);
         }
+    }
+    public void onBackClick(View view) {
+        finish(); // Đóng Activity hiện tại và quay lại trang trước
     }
 
     private void populateBudgetSpinner() {
@@ -76,6 +114,18 @@ public class AddExpenseActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, budgetGroups);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerBudget.setAdapter(adapter);
+    }
+
+    private double parseAmount(String amountText) throws NumberFormatException {
+        if (amountText.isEmpty()) {
+            throw new NumberFormatException("Amount is empty");
+        }
+
+        // Loại bỏ các ký tự không cần thiết
+        amountText = amountText.replace(",", ""); // Bỏ dấu phẩy
+        amountText = amountText.replace("VND", "").trim(); // Bỏ "VND" và khoảng trắng
+
+        return Double.parseDouble(amountText);
     }
 
     public void onSelectDate(View view) {
@@ -106,9 +156,9 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         double amount;
         try {
-            amount = Double.parseDouble(amountText);
+            amount = parseAmount(amountText); // Chuẩn hóa số tiền
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid amount!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid amount format! Example: '1,000 VND'", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -127,12 +177,16 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         if (isSuccess) {
             Toast.makeText(this, transactionId == -1 ? "Expense added successfully!" : "Expense updated successfully!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(AddExpenseActivity.this, TransactionListActivity.class);
+
+            // Chuyển sang MenuMainActivity và mở WalletFragment
+            Intent intent = new Intent(AddExpenseActivity.this, MenuMainActivity.class);
+            intent.putExtra("open_wallet", true); // Gửi tín hiệu để mở WalletFragment
             startActivity(intent);
-            finish();
+            finish(); // Đóng Activity hiện tại
         } else {
             Toast.makeText(this, transactionId == -1 ? "Failed to add expense. Try again!" : "Failed to update expense. Try again!", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void loadTransactionData(Intent intent) {
@@ -141,7 +195,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         String date = intent.getStringExtra("date");
         String budgetName = intent.getStringExtra("budgetName");
 
-        edtAmount.setText(String.valueOf(amount));
+        edtAmount.setText(String.format("%.2f VND", amount).replace(".00", "")); // Hiển thị định dạng có "VND"
         edtDescription.setText(description);
         tvDate.setText(date);
         spinnerBudget.setSelection(getBudgetPosition(budgetName));

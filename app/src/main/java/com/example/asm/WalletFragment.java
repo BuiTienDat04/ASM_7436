@@ -1,64 +1,103 @@
 package com.example.asm;
 
+import android.database.Cursor;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link WalletFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.example.asm.adapter.TransactionAdapter;
+import com.example.asm.expenses.ExpenseDatabaseHelper;
+import com.example.asm.expenses.Transaction;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 public class WalletFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private ListView lvTransactions;
+    private ExpenseDatabaseHelper dbHelper;
+    private List<Transaction> transactionList;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public WalletFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment WalletFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static WalletFragment newInstance(String param1, String param2) {
-        WalletFragment fragment = new WalletFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_wallet, container, false);
+
+        lvTransactions = view.findViewById(R.id.lvTransactions);
+        dbHelper = new ExpenseDatabaseHelper(requireContext());
+
+        loadTransactions();
+
+        return view;
+    }
+
+    private void loadTransactions() {
+        transactionList = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = dbHelper.getAllTransactions();
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                    String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                    double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
+                    String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                    String budgetName = cursor.getString(cursor.getColumnIndexOrThrow("budget_name"));
+
+                    // Định dạng ngày theo định dạng "dd/MM/yyyy"
+                    String formattedDate = formatDate(date);
+
+                    // Log dữ liệu để kiểm tra
+                    Log.d("WalletFragment", "ID: " + id + ", Description: " + description +
+                            ", Amount: " + amount + ", Date: " + formattedDate + ", Budget: " + budgetName);
+
+                    // Lưu dữ liệu dưới dạng double cho amount và định dạng ngày
+                    transactionList.add(new Transaction(id, description, amount, formattedDate, budgetName));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("WalletFragment", "Error loading transactions", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        TransactionAdapter adapter = new TransactionAdapter(requireContext(), transactionList);
+        lvTransactions.setAdapter(adapter);
+
+        Log.d("WalletFragment", "Loaded " + transactionList.size() + " transactions");
+    }
+
+    // Định dạng lại ngày theo định dạng "dd/MM/yyyy"
+    private String formatDate(String date) {
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()); // Giả sử ngày gốc là "yyyy-MM-dd"
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()); // Định dạng "dd/MM/yyyy"
+            Date parsedDate = inputFormat.parse(date);
+            return outputFormat.format(parsedDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return date; // Nếu có lỗi, trả về ngày gốc
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_wallet, container, false);
+    public void onResume() {
+        super.onResume();
+        loadTransactions(); // Làm mới danh sách giao dịch khi quay lại Fragment
     }
 }
+

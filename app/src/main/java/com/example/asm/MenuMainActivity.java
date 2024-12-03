@@ -19,9 +19,18 @@ public class MenuMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu_main);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         viewPager2 = findViewById(R.id.viewPage2);
+
         clickTabItemMenu();
         setupViewPager();
+
+        // Kiểm tra nếu Intent yêu cầu mở WalletFragment
+        if (getIntent().getBooleanExtra("open_wallet", false)) {
+            // Chuyển ViewPager2 sang tab WalletFragment
+            viewPager2.setCurrentItem(1); // Tab WalletFragment
+            bottomNavigationView.setSelectedItemId(R.id.wallet_menu); // Đồng bộ với BottomNavigationView
+        }
     }
+
 
     private void setupViewPager() {
         ViewPageAdapter adapter = new ViewPageAdapter(getSupportFragmentManager(), getLifecycle());

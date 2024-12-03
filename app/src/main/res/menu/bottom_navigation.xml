@@ -5,7 +5,7 @@
         android:id="@+id/home_menu"
         android:icon="@drawable/icon_home"/>
     <item
-        android:title="Wallet"
+        android:title="Expense"
         android:id="@+id/wallet_menu"
         android:icon="@drawable/icon_wallet"/>
     <item

@@ -48,7 +48,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         Button btnDelete = convertView.findViewById(R.id.btnDelete);
 
         descriptionTextView.setText(transaction.getDescription());
-        amountTextView.setText(formatCurrency(transaction.getAmount()));
+        amountTextView.setText(formatCurrency(transaction.getAmount())); // Use formatted amount
         dateTextView.setText(transaction.getDate());
         categoryTextView.setText(transaction.getBudgetName()); // This maps to budgetName
 
@@ -71,9 +71,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         return convertView;
     }
 
+    // Format the currency as per VND with commas for thousands
     private String formatCurrency(double amount) {
-        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        NumberFormat format = NumberFormat.getInstance(new Locale("vi", "VN"));
         format.setCurrency(Currency.getInstance("VND"));
-        return format.format(amount);
+        return format.format(amount) + " VND"; // Append "VND" to formatted amount
     }
 }

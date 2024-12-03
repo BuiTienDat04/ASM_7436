@@ -3,45 +3,47 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp"
-    android:background="?android:attr/selectableItemBackground">
+    android:padding="16dp"
+    android:background="@drawable/card_background"
+    android:elevation="2dp">
 
+    <!-- Description -->
     <TextView
         android:id="@+id/tvDescription"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Description"
         android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingBottom="4dp" />
 
+    <!-- Amount -->
     <TextView
         android:id="@+id/tvAmount"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Amount"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:layout_below="@id/tvDescription"
-        android:layout_marginTop="4dp" />
+        android:textColor="#FF9800"
+        android:textSize="14sp"
+        android:paddingBottom="4dp" />
 
+    <!-- Date -->
     <TextView
         android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Date"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:layout_below="@id/tvAmount"
-        android:layout_marginTop="4dp" />
+        android:textColor="#9E9E9E"
+        android:textSize="14sp"
+        android:paddingBottom="4dp" />
 
+    <!-- Category -->
     <TextView
         android:id="@+id/tvCategory"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Category"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:layout_below="@id/tvDate"
-        android:layout_marginTop="4dp" />
-
+        android:textColor="#03DAC5"
+        android:textSize="14sp" />
 </LinearLayout>
