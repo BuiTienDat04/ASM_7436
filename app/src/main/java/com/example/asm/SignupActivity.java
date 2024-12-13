@@ -54,6 +54,13 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Validate password
+                if (!isValidPassword(password)) {
+                    edtPassword.setError("Password must be at least 8 characters long, " +
+                            "and include at least one uppercase letter, one lowercase letter, and one digit.");
+                    return;
+                }
+
                 if (accountService.isUsernameExists(user)) {
                     Toast.makeText(SignupActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();
                     return;
@@ -74,13 +81,25 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-
-
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+    }
+
+    // Method to validate password
+    private boolean isValidPassword(String password) {
+        if (password.length() < 8) return false;
+        boolean hasUpper = false, hasLower = false, hasDigit = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isLowerCase(c)) hasLower = true;
+            else if (Character.isDigit(c)) hasDigit = true;
+        }
+
+        return hasUpper && hasLower && hasDigit;
     }
 }

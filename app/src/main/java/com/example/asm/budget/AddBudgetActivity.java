@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asm.R;
+import com.example.asm.expenses.ExpenseDatabaseHelper;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -79,6 +80,7 @@ public class AddBudgetActivity extends AppCompatActivity {
                 String input = s.toString().replace(",", "").replace(" VND", "").trim();
                 if (!input.isEmpty()) {
                     try {
+
                         long value = Long.parseLong(input);
                         String formatted = numberFormat.format(value) + " VND";
                         etAmount.setText(formatted);
@@ -104,30 +106,45 @@ public class AddBudgetActivity extends AppCompatActivity {
     /**
      * Xử lý dữ liệu khi chuyển sang chế độ chỉnh sửa
      */
+    /**
+     * Xử lý dữ liệu khi chuyển sang chế độ chỉnh sửa
+     */
     private void handleIncomingData() {
         Intent intent = getIntent();
         oldGroupName = intent.getStringExtra("groupName");
-        String editAmount = intent.getStringExtra("amount");
+        String editAmount = intent.getStringExtra("amount"); // Nhận số tiền từ Intent
         String editStartDate = intent.getStringExtra("startDate");
         String editEndDate = intent.getStringExtra("endDate");
 
         if (oldGroupName != null) {
-            isEditing = true; // Đang chỉnh sửa
+            isEditing = true; // Chế độ chỉnh sửa
             edtAddGroupName.setText(oldGroupName);
 
-            // Kiểm tra và xử lý giá trị null
-            etAmount.setText((editAmount != null ? editAmount : "0") + " VND");
+            // Kiểm tra và hiển thị số tiền
+            if (editAmount != null && !editAmount.isEmpty()) {
+                try {
+                    long amount = Long.parseLong(editAmount); // Chuyển thành số
+                    etAmount.setText(numberFormat.format(amount) + " VND"); // Hiển thị có định dạng
+                } catch (NumberFormatException e) {
+                    etAmount.setText("0 VND"); // Giá trị mặc định khi lỗi
+                }
+            } else {
+                etAmount.setText("0 VND"); // Giá trị mặc định khi không có số tiền
+            }
+
+            // Gán ngày tháng
             tvDateRange.setText("From " + (editStartDate != null ? editStartDate : "N/A") +
                     " - To " + (editEndDate != null ? editEndDate : "N/A"));
 
-            // Gán giá trị cho biến startDate và endDate
-            startDate = editStartDate != null ? editStartDate : null;
-            endDate = editEndDate != null ? editEndDate : null;
+            startDate = editStartDate;
+            endDate = editEndDate;
 
-            // Đổi tên nút lưu thành "Update"
+            // Đổi tên nút Lưu thành Cập nhật
             btnSave.setText("Update");
         }
     }
+
+
 
 
     /**
@@ -178,12 +195,24 @@ public class AddBudgetActivity extends AppCompatActivity {
             String groupName = edtAddGroupName.getText().toString().trim();
             String numericAmount = getNumericAmount();
 
-            databaseHelper.addBudget(groupName, numericAmount, startDate, endDate);
+            // Kiểm tra tên danh mục có tồn tại không
+            if (databaseHelper.isBudgetGroupExist(groupName)) {
+                Toast.makeText(this, "Category name already exists, please choose another name!", Toast.LENGTH_SHORT).show();
+            } else {
+                // Thêm mới nếu không bị trùng
+                databaseHelper.addBudget(groupName, numericAmount, startDate, endDate);
+                Toast.makeText(this, "Data saved!", Toast.LENGTH_SHORT).show();
 
-            Toast.makeText(this, "Data saved to database!", Toast.LENGTH_SHORT).show();
-            finish(); // Kết thúc Activity
+                if (validateInputs()) {
+                    databaseHelper.addBudget(groupName, numericAmount, startDate, endDate);
+                    Toast.makeText(this, "Data saved to database!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                finish();
+            }
         }
     }
+
 
     /**
      * Cập nhật dữ liệu đã tồn tại
@@ -197,6 +226,26 @@ public class AddBudgetActivity extends AppCompatActivity {
 
             if (result) {
                 Toast.makeText(this, "Budget updated successfully!", Toast.LENGTH_SHORT).show();
+
+                if (validateInputs()) {
+
+                    // Tạo một thể hiện của ExpenseDatabaseHelper
+                    ExpenseDatabaseHelper expenseDatabaseHelper = new ExpenseDatabaseHelper(this);
+
+                    // Cập nhật tên danh mục cho tất cả các chi tiêu liên quan
+                    if (result) {
+                        boolean expenseUpdateResult = expenseDatabaseHelper.updateExpensesByBudgetName(oldGroupName, newGroupName);
+                        if (expenseUpdateResult) {
+                            Toast.makeText(this, "All related expenses updated successfully!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Some expenses could not be updated.", Toast.LENGTH_SHORT).show();
+                        }
+                        Toast.makeText(this, "Budget updated successfully!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Failed to update budget. Please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                    finish();
+                }
                 finish();
             } else {
                 Toast.makeText(this, "Failed to update budget", Toast.LENGTH_SHORT).show();
@@ -226,10 +275,9 @@ public class AddBudgetActivity extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * Lấy số tiền dạng số
-     */
-    private String getNumericAmount() {
-        return etAmount.getText().toString().replace(" VND", "").replace(",", "").trim();
-    }
+/**
+ * Lấy số tiền dạng số
+ */private String getNumericAmount() {
+    return etAmount.getText().toString().replace(" VND", "").replace(",", "").trim();
+}
 }

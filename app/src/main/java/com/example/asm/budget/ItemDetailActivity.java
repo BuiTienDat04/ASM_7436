@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asm.R;
 import com.example.asm.expenses.AddExpenseActivity;
+import com.example.asm.expenses.ExpenseDatabaseHelper;
 
 import java.text.DecimalFormat;
 
@@ -19,6 +20,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     private TextView tvCategory, tvAmount, tvStartDate, tvEndDate;
     private Button btnAddExpense, btnDelete, btnEdit, btnBack;
     private BudgetDatabaseHelper databaseHelper;
+    private ExpenseDatabaseHelper expenseDatabaseHelper;
     private String groupName;
 
     @Override
@@ -28,6 +30,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
         // Khởi tạo cơ sở dữ liệu
         databaseHelper = new BudgetDatabaseHelper(this);
+        expenseDatabaseHelper = new ExpenseDatabaseHelper(this);
 
         // Nhận dữ liệu từ Intent
         groupName = getIntent().getStringExtra("groupName");
@@ -61,6 +64,21 @@ public class ItemDetailActivity extends AppCompatActivity {
         btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(ItemDetailActivity.this, AddBudgetActivity.class);
             intent.putExtra("groupName", groupName);
+
+            // Lấy chính xác số tiền
+            String amount = tvAmount.getText().toString()
+                    .replace("Amount: ", "") // Loại bỏ tiền tố
+                    .replace(" VND", "")     // Loại bỏ hậu tố
+                    .replace(",", "");       // Loại bỏ dấu phẩy
+            intent.putExtra("amount", amount);
+
+            // Truyền ngày bắt đầu và kết thúc
+            String startDate = tvStartDate.getText().toString().replace("Start Date: ", "");
+            String endDate = tvEndDate.getText().toString().replace("End Date: ", "");
+
+            intent.putExtra("startDate", startDate);
+            intent.putExtra("endDate", endDate);
+
             startActivity(intent);
         });
 
@@ -97,12 +115,26 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     private void deleteBudget() {
-        boolean result = databaseHelper.deleteBudgetByGroupName(groupName);
-        if (result) {
-            Toast.makeText(this, "Budget deleted successfully!", Toast.LENGTH_SHORT).show();
-            finish();
+        if (budgetHasTransactions(groupName)) {
+            Toast.makeText(this, "Cannot delete budget. There are still costs associated with this category..", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Failed to delete budget.", Toast.LENGTH_SHORT).show();
+            boolean result = databaseHelper.deleteBudgetByGroupName(groupName);
+            if (result) {
+                Toast.makeText(this, "Budget deleted successfully!", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Delete failed budget.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
+    private boolean budgetHasTransactions(String budgetName) {
+        Cursor cursor = expenseDatabaseHelper.getTransactionsByBudgetName(budgetName);
+        boolean hasTransactions = cursor != null && cursor.moveToFirst();
+        if (cursor != null) {
+            cursor.close();
+        }
+        return hasTransactions;
+    }
 }
+

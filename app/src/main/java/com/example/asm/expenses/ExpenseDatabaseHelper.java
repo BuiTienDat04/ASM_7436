@@ -56,6 +56,15 @@ public class ExpenseDatabaseHelper extends SQLiteOpenHelper {
         return result != -1; // Trả về true nếu thêm thành công
     }
 
+    public boolean updateExpensesByBudgetName(String oldBudgetName, String newBudgetName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("budget_name", newBudgetName); // Cập nhật tên ngân sách mới
+
+        int rowsAffected = db.update("expenses", contentValues, "budget_name = ?", new String[]{oldBudgetName});
+        return rowsAffected > 0; // Trả về true nếu có ít nhất một hàng được cập nhật
+    }
+
     public boolean updateExpense(int id, double amount, String description, String date, String budgetName) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -80,11 +89,13 @@ public class ExpenseDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_EXPENSES, null); // Đóng Cursor do người gọi
     }
+
     public Cursor getTransactionById(int transactionId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_EXPENSES + " WHERE " + COLUMN_ID + " = ?";
         return db.rawQuery(query, new String[]{String.valueOf(transactionId)});
     }
-
-
+    public Cursor getTransactionsByBudgetName(String budgetName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM expenses WHERE budget_name = ?", new String[]{budgetName}); }
 }

@@ -102,11 +102,19 @@ public class BudgetDatabaseHelper extends SQLiteOpenHelper {
     // Check if a budget group exists
     public boolean isBudgetGroupExist(String groupName) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT 1 FROM " + TABLE_BUDGET + " WHERE " + COLUMN_GROUP_NAME + "=?";
-        Cursor cursor = db.rawQuery(query, new String[]{groupName});
-        boolean exists = cursor.moveToFirst();
-        cursor.close();
-        db.close();
-        return exists;
+        Cursor cursor = null;
+        try {
+            String query = "SELECT 1 FROM " + TABLE_BUDGET + " WHERE " + COLUMN_GROUP_NAME + "=?";
+            cursor = db.rawQuery(query, new String[]{groupName});
+            return cursor.moveToFirst(); // Nếu có dữ liệu, trả về true
+        } finally {
+            if (cursor != null) {
+                cursor.close(); // Đóng Cursor
+            }
+        }
     }
+
+    public Cursor getTransactionsByBudgetName(String budgetName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM transactions WHERE budget_name = ?", new String[]{budgetName}); }
 }
